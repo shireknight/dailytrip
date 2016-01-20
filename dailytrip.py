@@ -13,13 +13,9 @@ class App:
         newTripBtn.pack(side=LEFT)
         quitBtn.pack(side=RIGHT)
 
-    #def mkWidgets(self):
-
-
-
-
     def createNewTrip(self):
         Trip()
+        quit()
 
     def quit(self):
         sys.exit()
