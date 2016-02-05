@@ -1,8 +1,3 @@
-import os, sys
-import urllib, urllib2
-import json
-from Tkinter import *
-
 '''
     Title: DailyTrip
     Author: Ben Valentine
@@ -14,9 +9,17 @@ from Tkinter import *
     from json file + fixing button alignment.
 '''
 
+
+import os, sys
+import urllib, urllib2
+import json
+from Tkinter import *
+
 class App(Frame):
 
+    # Distance Matrix URL
     API_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
+    # this has to go somewhere else, its not safe
     API_KEY = 'AIzaSyCbdRN1-Cn8mo5TZ_-S_diukU3Qh6cdf9E'
 
     def __init__(self, parent=None):
@@ -46,27 +49,32 @@ class App(Frame):
 
 
     def getTripTime(self):
+        # grab addresses from inputs
         addresses = {
             'origins' : self.orig_val.get(),
             'destinations' : self.dest_val.get()
         }
+        # append addresses to url
         url = self.API_URL
         url += '&' + urllib.urlencode(addresses)
         url += '&key=' + self.API_KEY
 
-        try:
+        try: # calling Google Distance Matrix API
             response = urllib2.urlopen(url)
             contents = response.read()
             decoded = json.loads(contents)
 
+            # dig deep for data
             dist = decoded['rows'][0]['elements'][0]['distance']['text']
             dur = decoded['rows'][0]['elements'][0]['duration']['text']
 
             self.results.insert(END, 'Distance: ' + dur + '\r\n')
             self.results.insert(END, 'Duration: ' + dist + '\r\n')
-        except IOError as e:
+        except IOError as e: # error on the command line for now
+            # eventually we'll print this for the user in the textbox
             print e.strerror
 
+    # clears text boxes
     def resetVals(self):
         self.orig_val.delete(0, END)
         self.dest_val.delete(0, END)
