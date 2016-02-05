@@ -1,42 +1,75 @@
 import os, sys
+import urllib, urllib2
+import json
 from Tkinter import *
-# from quitter import Quitter
+
+'''
+    Title: DailyTrip
+    Author: Ben Valentine
+    Copyright: 2016, Ben Valentine
+    Version 1.0
+
+    - Completed basic functionality and ugly UI.
+    - Next steps including saving and retrieving trips
+    from json file + fixing button alignment.
+'''
 
 class App(Frame):
 
     API_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
     API_KEY = 'AIzaSyCbdRN1-Cn8mo5TZ_-S_diukU3Qh6cdf9E'
 
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
+    def __init__(self, parent=None):
+        Frame.__init__(self, parent, width=500)
+        self.grid(row=2, column=4)
 
-        origLbl = Label(self, text='Origin:')
-        origLbl.pack()
-        origPut = Entry(self, textvariable=orig)
-        origPut.pack()
+        # origin widgets
+        orig_lbl = Label(self, text="Origin:").grid(row=0, sticky=W)
+        self.orig_val = Entry(self, width=50)
+        self.orig_val.grid(row=0, column=1)
+        # insert most recent from json file
+        # self.orig_val.insert(0, address1)
 
-        destLbl = Label(self, text='Destination:')
-        destLbl.pack()
-        destPut = Entry(self, textvariable=dest)
-        destPut.pack()
+        #destination widgets
+        dest_lbl = Label(self, text="Destination:").grid(row=1, sticky=W)
+        self.dest_val = Entry(self, width=50)
+        self.dest_val.grid(row=1, column=1)
+        # insert most recent from json file
+        # self.dest_val.insert(0, address2)
 
-        qBtn = Button(self, text="Quit", command=self.quit)
-        #qBtn.grid(row=2, column=2)
-        qBtn.pack()
+        self.results = Text(self, height=5)
+        self.results.grid(row=0, column=2, columnspan=2, rowspan=2)
 
-    def getTripTime(self, start, end):
-        print start + " " + end
-
-
-
-    def quit(self):
-        sys.exit()
-
-
+        # go button calls get getTripTime
+        resetBtn = Button(self, text="Reset", command=self.resetVals).grid(row=2, sticky=W)
+        goBtn = Button(self, text="Go", command=self.getTripTime).grid(row=2, column=2, sticky=E)
 
 
+    def getTripTime(self):
+        addresses = {
+            'origins' : self.orig_val.get(),
+            'destinations' : self.dest_val.get()
+        }
+        url = self.API_URL
+        url += '&' + urllib.urlencode(addresses)
+        url += '&key=' + self.API_KEY
+
+        try:
+            response = urllib2.urlopen(url)
+            contents = response.read()
+            decoded = json.loads(contents)
+
+            dist = decoded['rows'][0]['elements'][0]['distance']['text']
+            dur = decoded['rows'][0]['elements'][0]['duration']['text']
+
+            self.results.insert(END, 'Distance: ' + dur + '\r\n')
+            self.results.insert(END, 'Duration: ' + dist + '\r\n')
+        except IOError as e:
+            print e.strerror
+
+    def resetVals(self):
+        self.orig_val.delete(0, END)
+        self.dest_val.delete(0, END)
 
 if __name__ == "__main__":
-    top = Tk()
-    app = App(top)
-    top.mainloop()
+    App().mainloop()
