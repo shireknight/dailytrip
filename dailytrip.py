@@ -1,30 +1,39 @@
 import os, sys
 from Tkinter import *
+# from quitter import Quitter
 
-class App:
+class App(Frame):
 
-    def __init__(self, master):
-        self.frame = Frame(master)
-        self.frame.grid()
-        f2 = Frame(master, width=200, height=100)
-        f2.grid(row=0, column=1)
-        newTripBtn = Button(self.frame, text="New Trip", command=self.createNewTrip)
-        quitBtn = Button(self.frame, text="Quit", command=self.quit)
-        newTripBtn.pack(side=LEFT)
-        quitBtn.pack(side=RIGHT)
+    API_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?'
+    API_KEY = 'AIzaSyCbdRN1-Cn8mo5TZ_-S_diukU3Qh6cdf9E'
 
-    def createNewTrip(self):
-        Trip()
-        quit()
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+
+        origLbl = Label(self, text='Origin:')
+        origLbl.pack()
+        origPut = Entry(self, textvariable=orig)
+        origPut.pack()
+
+        destLbl = Label(self, text='Destination:')
+        destLbl.pack()
+        destPut = Entry(self, textvariable=dest)
+        destPut.pack()
+
+        qBtn = Button(self, text="Quit", command=self.quit)
+        #qBtn.grid(row=2, column=2)
+        qBtn.pack()
+
+    def getTripTime(self, start, end):
+        print start + " " + end
+
+
 
     def quit(self):
         sys.exit()
 
 
-class Trip:
 
-    def __init__(self):
-        print 'new trip instance'
 
 
 if __name__ == "__main__":
