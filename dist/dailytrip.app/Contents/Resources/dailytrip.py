@@ -1,14 +1,21 @@
 '''
     Title: DailyTrip
+    Version: 1.0
     Author: Ben Valentine
-    Copyright: 2016, Ben Valentine
-    Version 1.0
+    Copyright: 2016, Ben Valentine, it's my code! mine!!
 
-    - Completed basic functionality and ugly UI.
-    - Next steps including saving and retrieving trips
-    from json file + fixing button alignment.
+    Completed basic functionality and ugly UI.
+
+    TODO:
+    - Functionality for saving and retrieving trips
+    from json file
+    - Fix button alignment.
+    - Make text box uneditable
+    - Move api key to another file or use secret
+    - Print api call exceptions in textbox for userp
+    - Sharpen the UI
+
 '''
-
 
 import os, sys
 import urllib, urllib2
@@ -80,4 +87,6 @@ class App(Frame):
         self.dest_val.delete(0, END)
 
 if __name__ == "__main__":
+    root = Tk()
+    root.title("Daily Trip")
     App().mainloop()
